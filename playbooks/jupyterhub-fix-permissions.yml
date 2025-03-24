@@ -1,0 +1,27 @@
+---
+- name: Fix JupyterHub permission issues
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Set ownership of /etc/jupyterhub to bk01
+      file:
+        path: /etc/jupyterhub
+        owner: bk01
+        group: bk01
+        recurse: yes
+
+    - name: Set strict permissions on jupyterhub_cookie_secret
+      file:
+        path: /etc/jupyterhub/jupyterhub_cookie_secret
+        owner: bk01
+        group: bk01
+        mode: '0600'
+
+    - name: Ensure jupyterhub.log exists and is writable by bk01
+      file:
+        path: /home/bk01/jupyterhub.log
+        state: touch
+        owner: bk01
+        group: bk01
+        mode: '0644'

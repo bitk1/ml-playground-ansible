@@ -1,0 +1,33 @@
+- name: Install and configure JupyterHub with Google OAuth
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Ensure pip and system dependencies are installed
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+          - nodejs
+          - npm
+        state: present
+        update_cache: yes
+
+    - name: Install configurable-http-proxy globally with npm
+      npm:
+        name: configurable-http-proxy
+        global: yes
+
+    - name: Create Python virtual environment for JupyterHub
+      command: python3 -m venv /opt/jupyterhub-venv
+      args:
+        creates: /opt/jupyterhub-venv
+
+    - name: Upgrade pip in virtualenv
+      command: /opt/jupyterhub-venv/bin/pip install --upgrade pip
+
+    - name: Install JupyterHub and OAuthenticator in virtualenv
+      command: >
+        /opt/jupyterhub-venv/bin/pip install
+        --no-cache-dir
+        jupyterhub notebook jupyterlab oauthenticator
+

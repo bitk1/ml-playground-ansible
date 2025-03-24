@@ -1,0 +1,16 @@
+c.JupyterHub.authenticator_class = 'oauthenticator.google.GoogleOAuthenticator'
+c.GoogleOAuthenticator.client_id = "{{ google_oauth_client_id }}"
+c.GoogleOAuthenticator.client_secret = "{{ google_oauth_client_secret }}"
+c.GoogleOAuthenticator.oauth_callback_url = "http://localhost:8000/hub/oauth_callback"
+
+# Allow anyone with a Google account to log in (limit later if needed)
+c.Authenticator.allowed_google_groups = []
+c.Authenticator.admin_users = set()
+
+# Spawning settings
+c.Spawner.default_url = '/lab'
+c.Spawner.cmd = ['jupyter-labhub']
+
+# Use system users or create them dynamically
+c.Authenticator.create_system_users = True
+
