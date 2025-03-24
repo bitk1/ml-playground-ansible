@@ -1,0 +1,44 @@
+---
+- name: Setup ML environment with Ubuntu + Python + PyTorch + uv
+  hosts: ml_nodes
+  become: true
+
+  tasks:
+    - name: Ensure system packages are up to date
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install essential packages
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - curl
+          - build-essential
+        state: present
+
+    - name: Install uv (fast Python package manager)
+      shell: |
+        curl -Ls https://astral.sh/uv/install.sh | bash
+      args:
+        executable: /bin/bash
+      become: false
+
+    - name: Ensure uv is in PATH for current session
+      shell: export PATH="$HOME/.local/bin:$PATH"
+      args:
+        executable: /bin/bash
+      become: false
+
+    - name: Create test ML environment with uv
+      shell: |
+        mkdir -p ~/ml-test-uv
+        cd ~/ml-test-uv
+        ~/.local/bin/uv venv
+        source .venv/bin/activate
+        ~/.local/bin/uv pip install torch torchvision jupyterlab matplotlib pandas scikit-learn mosaicml transformers datasets
+      args:
+        executable: /bin/bash
+      become: false

@@ -1,0 +1,2 @@
+[ml_nodes]
+localhost ansible_connection=local ansible_user=bk01
